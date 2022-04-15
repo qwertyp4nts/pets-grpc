@@ -1,0 +1,13 @@
+ops:
+  host: "localhost"
+  port: 8082
+spec:
+  appName: "pets"
+  environment: "local"
+  host: "localhost"
+  insecure: true
+  restAPIProvider:
+    host: "http://localhost:3000"
+    insecure: true
+  port: 8080
+  verbose: true

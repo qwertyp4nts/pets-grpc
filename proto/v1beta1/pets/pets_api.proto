@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package pets;
+
+option go_package = "github.com/qwertyp4nts/pets-grpc/proto/v1beta1/pets";
+
+service PetsAPI {
+  rpc GetPet(GetPetRequest) returns (GetPetResponse) {}
+
+  rpc UpdatePet(UpdatePetRequest) returns (UpdatePetResponse) {}
+}
+
+// GetPetRequest defines the request for fetching a pet by ID from a database of pets.
+message GetPetRequest {
+  int32 id = 1;
+}
+
+// GetPetResponse defines the response for fetching a pet by ID from a database of pets.
+message GetPetResponse {
+  Pet pet = 1;
+  // google.protobuf.Timestamp last_updated = 2;
+}
+
+// Pet defines ...
+message Pet {
+  string type = 1;
+  string breed = 2;
+  int32 age = 3;
+  string colour = 4;
+}
+
+message UpdatePetRequest {
+  Pet pet = 1;
+}
+
+message UpdatePetResponse {
+  //empty, or could return the pet resource
+}
