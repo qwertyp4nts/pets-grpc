@@ -24,7 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type PetsAPIClient interface {
 	GetPet(ctx context.Context, in *GetPetRequest, opts ...grpc.CallOption) (*GetPetResponse, error)
 	GetPets(ctx context.Context, in *GetPetsRequest, opts ...grpc.CallOption) (*GetPetsResponse, error)
-	UpdatePet(ctx context.Context, in *UpdatePetRequest, opts ...grpc.CallOption) (*UpdatePetResponse, error)
+	AddPet(ctx context.Context, in *AddPetRequest, opts ...grpc.CallOption) (*AddPetResponse, error)
 }
 
 type petsAPIClient struct {
@@ -53,9 +53,9 @@ func (c *petsAPIClient) GetPets(ctx context.Context, in *GetPetsRequest, opts ..
 	return out, nil
 }
 
-func (c *petsAPIClient) UpdatePet(ctx context.Context, in *UpdatePetRequest, opts ...grpc.CallOption) (*UpdatePetResponse, error) {
-	out := new(UpdatePetResponse)
-	err := c.cc.Invoke(ctx, "/pets.PetsAPI/UpdatePet", in, out, opts...)
+func (c *petsAPIClient) AddPet(ctx context.Context, in *AddPetRequest, opts ...grpc.CallOption) (*AddPetResponse, error) {
+	out := new(AddPetResponse)
+	err := c.cc.Invoke(ctx, "/pets.PetsAPI/AddPet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +68,7 @@ func (c *petsAPIClient) UpdatePet(ctx context.Context, in *UpdatePetRequest, opt
 type PetsAPIServer interface {
 	GetPet(context.Context, *GetPetRequest) (*GetPetResponse, error)
 	GetPets(context.Context, *GetPetsRequest) (*GetPetsResponse, error)
-	UpdatePet(context.Context, *UpdatePetRequest) (*UpdatePetResponse, error)
+	AddPet(context.Context, *AddPetRequest) (*AddPetResponse, error)
 	mustEmbedUnimplementedPetsAPIServer()
 }
 
@@ -82,8 +82,8 @@ func (UnimplementedPetsAPIServer) GetPet(context.Context, *GetPetRequest) (*GetP
 func (UnimplementedPetsAPIServer) GetPets(context.Context, *GetPetsRequest) (*GetPetsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPets not implemented")
 }
-func (UnimplementedPetsAPIServer) UpdatePet(context.Context, *UpdatePetRequest) (*UpdatePetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdatePet not implemented")
+func (UnimplementedPetsAPIServer) AddPet(context.Context, *AddPetRequest) (*AddPetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddPet not implemented")
 }
 func (UnimplementedPetsAPIServer) mustEmbedUnimplementedPetsAPIServer() {}
 
@@ -134,20 +134,20 @@ func _PetsAPI_GetPets_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PetsAPI_UpdatePet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdatePetRequest)
+func _PetsAPI_AddPet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddPetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PetsAPIServer).UpdatePet(ctx, in)
+		return srv.(PetsAPIServer).AddPet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/pets.PetsAPI/UpdatePet",
+		FullMethod: "/pets.PetsAPI/AddPet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PetsAPIServer).UpdatePet(ctx, req.(*UpdatePetRequest))
+		return srv.(PetsAPIServer).AddPet(ctx, req.(*AddPetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -168,8 +168,8 @@ var PetsAPI_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PetsAPI_GetPets_Handler,
 		},
 		{
-			MethodName: "UpdatePet",
-			Handler:    _PetsAPI_UpdatePet_Handler,
+			MethodName: "AddPet",
+			Handler:    _PetsAPI_AddPet_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

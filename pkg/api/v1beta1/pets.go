@@ -88,7 +88,17 @@ func mapToPetResponse(ctx context.Context, pets *restapiprovider.Pets) (*proto.P
 	}, nil
 }
 
-// UpdatePet ...
-//func (s *Service) UpdatePet(ctx context.Context, req *proto.UpdatePetRequest) (*proto.UpdatePetResponse, error) {
-//	return &proto.UpdatePartyResponse{}, nil
-//}
+// AddPet ...
+func (s *Service) AddPet(ctx context.Context, req *proto.AddPetRequest) (*proto.AddPetResponse, error) {
+	downstreamReq := restapiprovider.AddPetRequest{
+		Breed: req.Breed,
+		Type:  req.Type,
+		Risk:  req.Risk,
+	}
+	err := s.adapters.RESTAPIProvider.AddPet(downstreamReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return &proto.AddPetResponse{}, nil
+}

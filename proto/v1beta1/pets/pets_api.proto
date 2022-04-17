@@ -9,8 +9,7 @@ import "google/protobuf/timestamp.proto";
 service PetsAPI {
   rpc GetPet(GetPetRequest) returns (GetPetResponse) {}
   rpc GetPets(GetPetsRequest) returns (GetPetsResponse) {}
-
-  rpc UpdatePet(UpdatePetRequest) returns (UpdatePetResponse) {}
+  rpc AddPet(AddPetRequest) returns (AddPetResponse) {}
 }
 
 // GetPetRequest defines the request for fetching a pet by ID from a database of pets.
@@ -41,10 +40,12 @@ message Pet {
   int32 risk = 4;
 }
 
-message UpdatePetRequest {
-  Pet pet = 1;
+message AddPetRequest {
+  string type = 1;
+  string breed = 2;
+  int32 risk = 3;
 }
 
-message UpdatePetResponse {
+message AddPetResponse {
   //empty, or could return the pet resource
 }

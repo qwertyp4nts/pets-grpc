@@ -1,6 +1,7 @@
 package restapiprovider
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 type Servicer interface {
 	GetPet(GetPetRequest) (*Pets, error)
 	GetPets() ([]*Pets, error)
+	AddPet(AddPetRequest) error
 }
 
 type GetPetRequest struct {
@@ -29,12 +31,12 @@ type Pets struct {
 	Type  string `json:"type"`
 	Breed string `json:"breed"`
 	Risk  int32  `json:"risk"`
-	//Addresses    []GetPartyResponseAddress `json:"addresses"`
-	//DateOfBirth  string                    `json:"dateOfBirth"`
-	//Emails       []Email                   `json:"emails"`
-	//Phones       []Phone                   `json:"phones"`
-	//Identifiers  []IdentifierInfo          `json:"identifiers"`
-	//TaxCountries []TaxCountry              `json:"taxCountries"`
+}
+
+type AddPetRequest struct {
+	Type  string `json:"type"`
+	Breed string `json:"breed"`
+	Risk  int32  `json:"risk"`
 }
 
 // Service holds the RESTAPIProvider Service attributes.
@@ -152,6 +154,59 @@ func (s *Service) GetPets() ([]*Pets, error) {
 	//objSlice, ok := createGetPetsResponse[0].([]interface{})
 
 	return createGetPetsResponse, nil
+}
+
+// AddPet ...
+func (s *Service) AddPet(req AddPetRequest) error {
+	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
+
+	if req.Type == "" {
+		log.Println("error - req.Type is required")
+		return errors.New("error - req.Type is required")
+	}
+
+	if req.Breed == "" {
+		log.Println("error - req.Breed is required")
+		return errors.New("error - req.Breed is required")
+	}
+
+	//if req.Risk == 0 {
+	//	log.Println("error - req.Risk is required")
+	//	return errors.New("error - req.Risk is required")
+	//} // cant tell if its 0 or not provided
+
+	path := fmt.Sprintf("%s/pets/add", s.AppSpec.RestAPIProvider.Host)
+	log.Println(path)
+
+	requestBody, err := json.Marshal(req)
+
+	resp, err := http.Post(path, "application/json", bytes.NewBuffer(requestBody))
+	if err != nil {
+		log.Println(err)
+		return errors.New("error performing GET request to restapiprovider API")
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusCreated {
+		// Ignore errors as this is just for logging purposes
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		return fmt.Errorf("response from restapiprovider =/= OK. respBody= %v", body)
+	}
+
+	_, responseErr := s.readResponse(resp.StatusCode, resp.Body)
+	if responseErr != nil {
+		return responseErr
+	}
+
+	return nil
 }
 
 func (s *Service) readResponse(respSc int, respBody io.Reader) ([]byte, error) {
