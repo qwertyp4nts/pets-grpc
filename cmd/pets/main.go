@@ -12,7 +12,6 @@ import (
 
 	"github.com/qwertyp4nts/pets-grpc/cmd/pets/config"
 	"github.com/qwertyp4nts/pets-grpc/cmd/pets/config/app"
-	// "github.com/qwertyp4nts/pets-grpc/cmd/pets/metadata"
 	"github.com/qwertyp4nts/pets-grpc/cmd/pets/startup"
 	"github.com/qwertyp4nts/pets-grpc/pkg/api"
 	"github.com/qwertyp4nts/pets-grpc/pkg/api/v1beta1"
@@ -80,15 +79,7 @@ func runOperationsServer(ctx context.Context, cfg *config.Config, healthServer *
 
 	// healthServer.HTTP.RegisterWith(mux)
 
-	//if err := otelhealth.Register(healthServer.State); err != nil {
-	//	log.Error(ctx, err).Msgf("Failed to register health metrics")
-	//
-	//	return anzErrors.New(
-	//		codes.Internal,
-	//		fmt.Sprintf("%s server could not register health metrics: %v", serverName, err),
-	//		anzErrors.NewErrorInfo(ctx, errcodes.Unknown, "failed to register health metrics"),
-	//	)
-	//}
+	// TODO -> Add health check endpoint
 
 	return servers.HTTPServer(ctx, mux, serverName, cfg.OpsSpec.Host, cfg.OpsSpec.Port)
 }

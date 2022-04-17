@@ -13,7 +13,7 @@ import (
 	"os"
 )
 
-// Servicer provides the transport-agnostic API for RestApiProvider.
+// Servicer provides the transport-agnostic API for RESTAPIProvider.
 type Servicer interface {
 	GetPet(GetPetRequest) (*Pets, error)
 	GetPets() ([]*Pets, error)
@@ -42,22 +42,10 @@ type AddPetRequest struct {
 // Service holds the RESTAPIProvider Service attributes.
 type Service struct {
 	AppSpec app.Spec
-	// Client  *http.Client // - For control over HTTP client headers, redirect policy, and other settings, create a Client
+	// Client  *http.Client // - For control over HTTP client headers, redirect policy, and other settings, create a Client here
 }
 
-// GetPet ...
-//func (s *Service) GetPets(ctx context.Context) (Pets, error) {
-//	//payload := getPetsRequest()
-//
-//	//requestBody, err := json.Marshal(payload)
-//	//if err != nil {
-//	//	return fmt.Errorf("an error occurred calling the restapiprovider API - Error: '%v', Status: '%d'", err, 500)
-//	//}
-//
-//	return s.getPets(), nil
-//}
-
-// getPets executes a call to restapiprovider's Get Pets API.
+// GetPet executes a call to RESTAPIProvider's Get Pets API.
 func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -83,7 +71,7 @@ func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 	resp, err := http.Get(path)
 	if err != nil {
 		log.Println(err)
-		return nil, errors.New("error performing GET request to restapiprovider API")
+		return nil, errors.New("error performing GET request to RESTAPIProvider API")
 	}
 
 	defer resp.Body.Close()
@@ -92,7 +80,7 @@ func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 		// Ignore errors as this is just for logging purposes
 		body, _ := ioutil.ReadAll(resp.Body)
 
-		return nil, fmt.Errorf("response from restapiprovider =/= OK. respBody= %v", body)
+		return nil, fmt.Errorf("response from RESTAPIProvider =/= OK. respBody= %v", body)
 	}
 
 	responseBody, responseErr := s.readResponse(resp.StatusCode, resp.Body)
@@ -110,7 +98,7 @@ func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 	return createGetPetsResponse[0], nil
 }
 
-// getPets executes a call to restapiprovider's Get Pets API.
+// GetPets executes a call to RESTAPIProvider's Get Pets API.
 func (s *Service) GetPets() ([]*Pets, error) {
 	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
@@ -127,7 +115,7 @@ func (s *Service) GetPets() ([]*Pets, error) {
 	resp, err := http.Get(path)
 	if err != nil {
 		log.Println(err)
-		return nil, errors.New("error performing GET request to restapiprovider API")
+		return nil, errors.New("error performing GET request to RESTAPIProvider API")
 	}
 
 	defer resp.Body.Close()
@@ -136,7 +124,7 @@ func (s *Service) GetPets() ([]*Pets, error) {
 		// Ignore errors as this is just for logging purposes
 		body, _ := ioutil.ReadAll(resp.Body)
 
-		return nil, fmt.Errorf("response from restapiprovider =/= OK. respBody= %v", body)
+		return nil, fmt.Errorf("response from RESTAPIProvider =/= OK. respBody= %v", body)
 	}
 
 	responseBody, responseErr := s.readResponse(resp.StatusCode, resp.Body)
@@ -189,7 +177,7 @@ func (s *Service) AddPet(req AddPetRequest) error {
 	resp, err := http.Post(path, "application/json", bytes.NewBuffer(requestBody))
 	if err != nil {
 		log.Println(err)
-		return errors.New("error performing GET request to restapiprovider API")
+		return errors.New("error performing GET request to RESTAPIProvider API")
 	}
 
 	defer resp.Body.Close()
@@ -198,7 +186,7 @@ func (s *Service) AddPet(req AddPetRequest) error {
 		// Ignore errors as this is just for logging purposes
 		body, _ := ioutil.ReadAll(resp.Body)
 
-		return fmt.Errorf("response from restapiprovider =/= OK. respBody= %v", body)
+		return fmt.Errorf("response from RESTAPIProvider =/= OK. respBody= %v", body)
 	}
 
 	_, responseErr := s.readResponse(resp.StatusCode, resp.Body)

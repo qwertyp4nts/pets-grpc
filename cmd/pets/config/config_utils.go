@@ -9,7 +9,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
-// Load configuration from file, env and flags and return compiled and validated config.
+// Load returns the compiled and validated config from file, env and flags.
 func Load() (*Config, error) {
 	f := flag.CommandLine
 
@@ -20,7 +20,7 @@ func Load() (*Config, error) {
 	return create(f)
 }
 
-// Create validated configuration from file, env, and flags.
+// create validates the configuration from file, env, and flags.
 func create(f *flag.FlagSet) (*Config, error) {
 	var config Config
 
@@ -42,7 +42,7 @@ func create(f *flag.FlagSet) (*Config, error) {
 
 	err = decoder.Decode(&config)
 	if err != nil {
-		log.Println("error while trying to open configuration file")
+		log.Println("error while trying to decode configuration file")
 
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func create(f *flag.FlagSet) (*Config, error) {
 	return &config, nil
 }
 
-// Flags enables shorthand flags for specific config values.
+// flags enables shorthand flags for specific config values.
 func flags(f *flag.FlagSet) {
 	f.StringP("config", "c", "", "The configuration file to use to configure this application")
 }

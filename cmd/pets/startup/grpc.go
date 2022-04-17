@@ -1,12 +1,12 @@
 package startup
 
 import (
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/health"
-
 	apiV1beta1 "github.com/qwertyp4nts/pets-grpc/pkg/api/v1beta1"
 	"github.com/qwertyp4nts/pets-grpc/pkg/servers"
 	protov1beta1 "github.com/qwertyp4nts/pets-grpc/proto/v1beta1/pets"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/health"
+	healthgrpc "google.golang.org/grpc/health/grpc_health_v1"
 )
 
 // GRPCRegistrations returns functions with implementations of registrations against the gRPC server.
@@ -20,8 +20,7 @@ func GRPCRegistrations(healthServer *health.Server, apiV1beta1 apiV1beta1.Servic
 		},
 		// Health Check
 		func(server *grpc.Server) error {
-			// healthServer.GRPC.RegisterWith(server)
-			// healthServer.SetReady(true)
+			healthgrpc.RegisterHealthServer(server, healthServer)
 			return nil
 		},
 	}

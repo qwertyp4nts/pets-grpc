@@ -15,7 +15,6 @@ type Servicer interface {
 }
 
 // Service holds onto the state of the Pets service.
-// nolint: maligned
 type Service struct {
 	adapters *api.Adapters
 	appSpec  app.Spec
