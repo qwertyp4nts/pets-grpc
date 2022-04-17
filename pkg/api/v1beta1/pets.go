@@ -14,7 +14,7 @@ import (
 // GetPet ...
 func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.GetPetResponse, error) {
 
-	pets, err := s.adapters.RESTAPIProvider.GetPet()
+	pets, err := s.adapters.RESTAPIProvider.GetPet(mapGetPetRequest(req))
 	if err != nil {
 		return nil, err
 	}
@@ -34,6 +34,13 @@ func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.
 		LastUpdated: timestamppb.New(time.Now().UTC()),
 		Pet:         res,
 	}, nil
+}
+
+func mapGetPetRequest(req *proto.GetPetRequest) restapiprovider.GetPetRequest {
+	return restapiprovider.GetPetRequest{
+		Type:  req.GetType(),
+		Breed: req.GetBreed(),
+	}
 }
 
 // GetPet ...

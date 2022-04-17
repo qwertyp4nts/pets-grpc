@@ -14,8 +14,13 @@ import (
 
 // Servicer provides the transport-agnostic API for RestApiProvider.
 type Servicer interface {
-	GetPet() (*Pets, error)
+	GetPet(GetPetRequest) (*Pets, error)
 	GetPets() ([]*Pets, error)
+}
+
+type GetPetRequest struct {
+	Type  string `json:"type"`
+	Breed string `json:"breed"`
 }
 
 // Pets holds the pet attributes used in a GetPetResponse.
@@ -51,7 +56,7 @@ type Service struct {
 //}
 
 // getPets executes a call to restapiprovider's Get Pets API.
-func (s *Service) GetPet() (*Pets, error) {
+func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -60,8 +65,17 @@ func (s *Service) GetPet() (*Pets, error) {
 
 	log.SetOutput(f)
 
-	//path := fmt.Sprintf("%s/pets/dog/dalmatian", s.AppSpec.RestAPIProvider.Host)
-	path := fmt.Sprintf("%s/pets", s.AppSpec.RestAPIProvider.Host)
+	if req.Type == "" {
+		log.Println("error - req.Type is required")
+		return nil, errors.New("error - req.Type is required")
+	}
+
+	if req.Breed == "" {
+		log.Println("error - req.Breed is required")
+		return nil, errors.New("error - req.Breed is required")
+	}
+
+	path := fmt.Sprintf("%s/pets/%s/%s", s.AppSpec.RestAPIProvider.Host, req.Type, req.Breed)
 	log.Println(path)
 
 	resp, err := http.Get(path)
