@@ -26,10 +26,7 @@ func GRPCServer(
 	serverErr := make(chan error)
 	defer close(serverErr)
 
-	server := grpc.NewServer(
-	// grpc.ChainUnaryInterceptor(unaryInterceptors...),
-	// grpc.ChainStreamInterceptor(streamInterceptors...),
-	)
+	server := grpc.NewServer()
 	reflection.Register(server)
 
 	for _, register := range registrations {
@@ -42,7 +39,7 @@ func GRPCServer(
 
 	log.Printf("Starting %s gRPC server on %s", name, serverAddress)
 
-	go startServer(ctx, server, serverAddress, serverErr)
+	go startServer(server, serverAddress, serverErr)
 
 	select {
 	case err := <-serverErr:
@@ -86,7 +83,7 @@ func HTTPServer(ctx context.Context, mux http.Handler, name string, host string,
 	return <-serverErr
 }
 
-func startServer(ctx context.Context, server *grpc.Server, serverAddress string, serverErr chan error) {
+func startServer(server *grpc.Server, serverAddress string, serverErr chan error) {
 	listener, err := net.Listen("tcp", serverAddress)
 	if err != nil {
 		serverErr <- errors.New("opening of TCP port failed")

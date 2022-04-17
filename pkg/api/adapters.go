@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"github.com/qwertyp4nts/pets-grpc/cmd/pets/config"
 	"github.com/qwertyp4nts/pets-grpc/pkg/integration/restapiprovider"
 )
@@ -12,7 +11,7 @@ type Adapters struct {
 }
 
 // NewAdapters constructs a new set of dependencies to be used by the Pets API.
-func NewAdapters(ctx context.Context, cfg *config.Config) (*Adapters, error) {
+func NewAdapters(cfg *config.Config) (*Adapters, error) {
 	restApiService := &restapiprovider.Service{
 		AppSpec: cfg.AppSpec,
 	}

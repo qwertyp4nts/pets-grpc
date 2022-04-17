@@ -1,4 +1,8 @@
-Run the service locally: `go run cmd/pets/main.go --config=./config/app/local.yaml`
+Run the service locally: `go run cmd/pets/main.go`
+
+Default config file is set to: `./config/app/local.yaml`
+
+To run with a custom config file: `go run cmd/pets/main.go --config=./config/app/local.yaml`
 
 Regenerate proto code (from root): 
 ```

@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	defaultPathConfigFile = "/app/config/config.yaml"
+	defaultPathConfigFile = "./config/app/local.yaml"
 )
 
-// Config defines configuration.
+// Config defines the configuration for the application.
 type Config struct {
-	AppSpec  app.Spec    `yaml:"spec" envconfig:"SPEC"`
-	OpsSpec  ops.Spec    `yaml:"ops,omitempty" envconfig:"OPS"`
+	AppSpec app.Spec `yaml:"spec" envconfig:"SPEC"`
+	OpsSpec ops.Spec `yaml:"ops,omitempty" envconfig:"OPS"`
 }
 
 // Validate checks that the values defined in the config are valid.

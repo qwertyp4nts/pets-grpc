@@ -1,6 +1,6 @@
 package app
 
-// Spec defines the configuration relevant to the functionality.
+// Spec defines the configuration relevant to the gRPC API.
 type Spec struct {
 	AppName         string          `yaml:"appName" envconfig:"APP_NAME"`
 	Environment     string          `yaml:"environment"`

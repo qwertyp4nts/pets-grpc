@@ -22,7 +22,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	cfg, err := config.Load(ctx)
+	cfg, err := config.Load()
 	if err != nil {
 		fmt.Errorf("failed to load app config. error: %v", err)
 	}
@@ -34,7 +34,7 @@ func main() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGTERM)
 
-	adapters, err := api.NewAdapters(ctx, cfg)
+	adapters, err := api.NewAdapters(cfg)
 	if err != nil {
 		fmt.Errorf("failed to create adapters. error: %v", err)
 	}

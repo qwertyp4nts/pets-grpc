@@ -1,7 +1,6 @@
 package config
 
 import (
-	"context"
 	"log"
 	"os"
 
@@ -11,18 +10,18 @@ import (
 )
 
 // Load configuration from file, env and flags and return compiled and validated config.
-func Load(ctx context.Context) (*Config, error) {
+func Load() (*Config, error) {
 	f := flag.CommandLine
 
 	flags(f)
 
 	flag.Parse()
 
-	return create(ctx, f)
+	return create(f)
 }
 
 // Create validated configuration from file, env, and flags.
-func create(ctx context.Context, f *flag.FlagSet) (*Config, error) {
+func create(f *flag.FlagSet) (*Config, error) {
 	var config Config
 
 	configFile, _ := f.GetString("config")
