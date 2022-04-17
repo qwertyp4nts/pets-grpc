@@ -2,6 +2,10 @@ package v1beta1
 
 import (
 	"context"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	"log"
+	"os"
+	"time"
 
 	"github.com/qwertyp4nts/pets-grpc/pkg/integration/restapiprovider"
 	proto "github.com/qwertyp4nts/pets-grpc/proto/v1beta1/pets"
@@ -10,12 +14,12 @@ import (
 // GetPet ...
 func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.GetPetResponse, error) {
 
-	pets, err := s.adapters.RESTAPIProvider.GetPets()
+	pets, err := s.adapters.RESTAPIProvider.GetPet()
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := mapToPetsResponse(ctx, pets)
+	res, err := mapToPetResponse(ctx, pets)
 	if err != nil {
 		return nil, err
 		//return nil, anzErrors.New(
@@ -27,13 +31,53 @@ func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.
 	}
 
 	return &proto.GetPetResponse{
-		Pet: res,
+		LastUpdated: timestamppb.New(time.Now().UTC()),
+		Pet:         res,
 	}, nil
 }
 
-func mapToPetsResponse(ctx context.Context, pets *restapiprovider.Pets) (*proto.Pet, error) {
+// GetPet ...
+func (s *Service) GetPets(ctx context.Context, req *proto.GetPetsRequest) (*proto.GetPetsResponse, error) {
+
+	pets, err := s.adapters.RESTAPIProvider.GetPets()
+	if err != nil {
+		return nil, err
+	}
+
+	p := []*proto.Pet{}
+
+	for _, pet := range pets {
+		p = append(p, &proto.Pet{
+			Id:    pet.Id,
+			Type:  pet.Type,
+			Breed: pet.Breed,
+			Risk:  pet.Risk,
+		})
+	}
+
+	return &proto.GetPetsResponse{
+		Pet: p,
+	}, nil
+}
+
+func mapToPetResponse(ctx context.Context, pets *restapiprovider.Pets) (*proto.Pet, error) {
+	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
+
+	log.Println(pets.Id)
+	log.Println(pets.Type)
+	log.Println(pets.Breed)
+	log.Println(pets.Risk)
 	return &proto.Pet{
-		Type: pets.Type,
+		Id:    pets.Id,
+		Type:  pets.Type,
+		Breed: pets.Breed,
+		Risk:  pets.Risk,
 	}, nil
 }
 

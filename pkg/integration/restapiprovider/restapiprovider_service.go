@@ -14,12 +14,16 @@ import (
 
 // Servicer provides the transport-agnostic API for RestApiProvider.
 type Servicer interface {
-	GetPets() (*Pets, error)
+	GetPet() (*Pets, error)
+	GetPets() ([]*Pets, error)
 }
 
 // Pets holds the pet attributes used in a GetPetResponse.
 type Pets struct {
-	Type string `json:"type"`
+	Id    string `json:"_id"`
+	Type  string `json:"type"`
+	Breed string `json:"breed"`
+	Risk  int32  `json:"risk"`
 	//Addresses    []GetPartyResponseAddress `json:"addresses"`
 	//DateOfBirth  string                    `json:"dateOfBirth"`
 	//Emails       []Email                   `json:"emails"`
@@ -47,7 +51,7 @@ type Service struct {
 //}
 
 // getPets executes a call to restapiprovider's Get Pets API.
-func (s *Service) GetPets() (*Pets, error) {
+func (s *Service) GetPet() (*Pets, error) {
 	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("error opening file: %v", err)
@@ -56,7 +60,8 @@ func (s *Service) GetPets() (*Pets, error) {
 
 	log.SetOutput(f)
 
-	path := fmt.Sprintf("%s/pets/dog/dalmatian", s.AppSpec.RestAPIProvider.Host)
+	//path := fmt.Sprintf("%s/pets/dog/dalmatian", s.AppSpec.RestAPIProvider.Host)
+	path := fmt.Sprintf("%s/pets", s.AppSpec.RestAPIProvider.Host)
 	log.Println(path)
 
 	resp, err := http.Get(path)
@@ -87,6 +92,52 @@ func (s *Service) GetPets() (*Pets, error) {
 	}
 
 	return createGetPetsResponse[0], nil
+}
+
+// getPets executes a call to restapiprovider's Get Pets API.
+func (s *Service) GetPets() ([]*Pets, error) {
+	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	defer f.Close()
+
+	log.SetOutput(f)
+
+	//path := fmt.Sprintf("%s/pets/dog/dalmatian", s.AppSpec.RestAPIProvider.Host)
+	path := fmt.Sprintf("%s/pets", s.AppSpec.RestAPIProvider.Host)
+	log.Println(path)
+
+	resp, err := http.Get(path)
+	if err != nil {
+		log.Println(err)
+		return nil, errors.New("error performing GET request to restapiprovider API")
+	}
+
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		// Ignore errors as this is just for logging purposes
+		body, _ := ioutil.ReadAll(resp.Body)
+
+		return nil, fmt.Errorf("response from restapiprovider =/= OK. respBody= %v", body)
+	}
+
+	responseBody, responseErr := s.readResponse(resp.StatusCode, resp.Body)
+	if responseErr != nil {
+		return nil, responseErr
+	}
+
+	var createGetPetsResponse []*Pets
+
+	err = json.Unmarshal(responseBody, &createGetPetsResponse)
+	if err != nil {
+		return nil, errors.New("server error")
+	}
+
+	//objSlice, ok := createGetPetsResponse[0].([]interface{})
+
+	return createGetPetsResponse, nil
 }
 
 func (s *Service) readResponse(respSc int, respBody io.Reader) ([]byte, error) {
