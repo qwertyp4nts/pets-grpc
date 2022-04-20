@@ -21,7 +21,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// GetPetRequest defines the request for fetching a pet by ID from a database of pets.
+// GetPetRequest defines the request for fetching a pet by type/breed from a database of pets.
 type GetPetRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -77,7 +77,7 @@ func (x *GetPetRequest) GetBreed() string {
 	return ""
 }
 
-// GetPetResponse defines the response for fetching a pet by ID from a database of pets.
+// GetPetResponse defines the response for fetching a pet by type/breed from a database of pets.
 type GetPetResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -133,7 +133,7 @@ func (x *GetPetResponse) GetLastUpdated() *timestamppb.Timestamp {
 	return nil
 }
 
-// GetPetRequest defines the request for fetching all pets from a database of pets.
+// GetPetsRequest defines the request for fetching all pets from a database of pets.
 type GetPetsRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -220,7 +220,7 @@ func (x *GetPetsResponse) GetPet() []*Pet {
 	return nil
 }
 
-// Pet defines ...
+// Pet defines a pet resource.
 type Pet struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -292,6 +292,7 @@ func (x *Pet) GetRisk() int32 {
 	return 0
 }
 
+// AddPetRequest defines the request for adding a pet to a database of pets.
 type AddPetRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -355,6 +356,7 @@ func (x *AddPetRequest) GetRisk() int32 {
 	return 0
 }
 
+// AddPetResponse defines the response for adding a pet to a database of pets.
 type AddPetResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache

@@ -69,9 +69,13 @@ func runGRPCServer(
 	petsv1beta1 := v1beta1.NewService(adapters, appSpec)
 	registrations := startup.GRPCRegistrations(healthServer, petsv1beta1)
 
+	// TODO -> Implement gRPC health server
+
 	return servers.GRPCServer(ctx, appSpec.AppName, appSpec.Host, appSpec.Port, registrations)
 }
 
+// runOperationsServer spins up a HTTP server which can be used to serve some health/logging/metrics etc over HTTP, or expose a HTTP API endpoint.
+// Currently it does none of those things, and is just used for demo purposes.
 func runOperationsServer(ctx context.Context, cfg *config.Config, healthServer *health.Server) error {
 	serverName := fmt.Sprintf("%s operations", cfg.AppSpec.AppName)
 

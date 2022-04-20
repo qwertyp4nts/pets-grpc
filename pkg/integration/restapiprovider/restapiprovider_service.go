@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 )
 
 // Servicer provides the transport-agnostic API for RESTAPIProvider.
@@ -47,14 +46,6 @@ type Service struct {
 
 // GetPet executes a call to RESTAPIProvider's Get Pets API.
 func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
-	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-
-	log.SetOutput(f)
-
 	if req.Type == "" {
 		log.Println("error - req.Type is required")
 		return nil, errors.New("error - req.Type is required")
@@ -100,15 +91,6 @@ func (s *Service) GetPet(req GetPetRequest) (*Pets, error) {
 
 // GetPets executes a call to RESTAPIProvider's Get Pets API.
 func (s *Service) GetPets() ([]*Pets, error) {
-	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-
-	log.SetOutput(f)
-
-	//path := fmt.Sprintf("%s/pets/dog/dalmatian", s.AppSpec.RestAPIProvider.Host)
 	path := fmt.Sprintf("%s/pets", s.AppSpec.RestAPIProvider.Host)
 	log.Println(path)
 
@@ -139,21 +121,11 @@ func (s *Service) GetPets() ([]*Pets, error) {
 		return nil, errors.New("server error")
 	}
 
-	//objSlice, ok := createGetPetsResponse[0].([]interface{})
-
 	return createGetPetsResponse, nil
 }
 
 // AddPet ...
 func (s *Service) AddPet(req AddPetRequest) error {
-	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-
-	log.SetOutput(f)
-
 	if req.Type == "" {
 		log.Println("error - req.Type is required")
 		return errors.New("error - req.Type is required")
@@ -163,11 +135,6 @@ func (s *Service) AddPet(req AddPetRequest) error {
 		log.Println("error - req.Breed is required")
 		return errors.New("error - req.Breed is required")
 	}
-
-	//if req.Risk == 0 {
-	//	log.Println("error - req.Risk is required")
-	//	return errors.New("error - req.Risk is required")
-	//} // cant tell if its 0 or not provided
 
 	path := fmt.Sprintf("%s/pets/add", s.AppSpec.RestAPIProvider.Host)
 	log.Println(path)

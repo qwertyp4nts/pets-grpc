@@ -10,10 +10,9 @@ import (
 )
 
 // GRPCRegistrations returns functions with implementations of registrations against the gRPC server.
-// nolint:funlen
 func GRPCRegistrations(healthServer *health.Server, apiV1beta1 apiV1beta1.Servicer) []servers.GRPCRegistration {
 	registrations := []servers.GRPCRegistration{
-		// Fabric Self Service v1beta1 registration
+		// Pets v1beta1 registration
 		func(server *grpc.Server) error {
 			protov1beta1.RegisterPetsAPIServer(server, apiV1beta1)
 			return nil

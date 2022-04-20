@@ -12,19 +12,19 @@ service PetsAPI {
   rpc AddPet(AddPetRequest) returns (AddPetResponse) {}
 }
 
-// GetPetRequest defines the request for fetching a pet by ID from a database of pets.
+// GetPetRequest defines the request for fetching a pet by type/breed from a database of pets.
 message GetPetRequest {
   string type = 1;
   string breed = 2;
 }
 
-// GetPetResponse defines the response for fetching a pet by ID from a database of pets.
+// GetPetResponse defines the response for fetching a pet by type/breed from a database of pets.
 message GetPetResponse {
   Pet pet = 1;
   google.protobuf.Timestamp last_updated = 2;
 }
 
-// GetPetRequest defines the request for fetching all pets from a database of pets.
+// GetPetsRequest defines the request for fetching all pets from a database of pets.
 message GetPetsRequest {}
 
 // GetPetsResponse defines the response for fetching all pets from a database of pets.
@@ -32,7 +32,7 @@ message GetPetsResponse {
   repeated Pet pet = 1; // array!
 }
 
-// Pet defines ...
+// Pet defines a pet resource.
 message Pet {
   string id = 1;
   string type = 2;
@@ -40,12 +40,14 @@ message Pet {
   int32 risk = 4;
 }
 
+// AddPetRequest defines the request for adding a pet to a database of pets.
 message AddPetRequest {
   string type = 1;
   string breed = 2;
   int32 risk = 3;
 }
 
+// AddPetResponse defines the response for adding a pet to a database of pets.
 message AddPetResponse {
-  //empty, or could return the pet resource
+  //empty, or could return the pet resource if we follow google AIP principles...
 }

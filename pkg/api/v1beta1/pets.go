@@ -3,15 +3,13 @@ package v1beta1
 import (
 	"context"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"log"
-	"os"
 	"time"
 
 	"github.com/qwertyp4nts/pets-grpc/pkg/integration/restapiprovider"
 	proto "github.com/qwertyp4nts/pets-grpc/proto/v1beta1/pets"
 )
 
-// GetPet ...
+// GetPet fetches a pet by type/breed.
 func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.GetPetResponse, error) {
 
 	pets, err := s.adapters.RESTAPIProvider.GetPet(mapGetPetRequest(req))
@@ -19,15 +17,9 @@ func (s *Service) GetPet(ctx context.Context, req *proto.GetPetRequest) (*proto.
 		return nil, err
 	}
 
-	res, err := mapToPetResponse(ctx, pets)
+	res, err := mapToPetResponse(pets)
 	if err != nil {
 		return nil, err
-		//return nil, anzErrors.New(
-		//	codes.Internal,
-		//	"Failed to map to GetPartyResponse",
-		//	anzErrors.NewErrorInfo(ctx, errcodes.DownstreamFailure, anzErrors.GetMessage(err)),
-		//	anzErrors.WithCause(err),
-		//)
 	}
 
 	return &proto.GetPetResponse{
@@ -43,7 +35,7 @@ func mapGetPetRequest(req *proto.GetPetRequest) restapiprovider.GetPetRequest {
 	}
 }
 
-// GetPet ...
+// GetPets fetches a list of pets.
 func (s *Service) GetPets(ctx context.Context, req *proto.GetPetsRequest) (*proto.GetPetsResponse, error) {
 
 	pets, err := s.adapters.RESTAPIProvider.GetPets()
@@ -67,19 +59,7 @@ func (s *Service) GetPets(ctx context.Context, req *proto.GetPetsRequest) (*prot
 	}, nil
 }
 
-func mapToPetResponse(ctx context.Context, pets *restapiprovider.Pets) (*proto.Pet, error) {
-	f, err := os.OpenFile("testlogfile", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v", err)
-	}
-	defer f.Close()
-
-	log.SetOutput(f)
-
-	log.Println(pets.Id)
-	log.Println(pets.Type)
-	log.Println(pets.Breed)
-	log.Println(pets.Risk)
+func mapToPetResponse(pets *restapiprovider.Pets) (*proto.Pet, error) {
 	return &proto.Pet{
 		Id:    pets.Id,
 		Type:  pets.Type,
@@ -88,7 +68,7 @@ func mapToPetResponse(ctx context.Context, pets *restapiprovider.Pets) (*proto.P
 	}, nil
 }
 
-// AddPet ...
+// AddPet adds a pet to a database of pets.
 func (s *Service) AddPet(ctx context.Context, req *proto.AddPetRequest) (*proto.AddPetResponse, error) {
 	downstreamReq := restapiprovider.AddPetRequest{
 		Breed: req.Breed,

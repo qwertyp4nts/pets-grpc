@@ -1,8 +1,16 @@
-Run the service locally: `go run cmd/pets/main.go`
+# gRPC Demo - Pets API
 
-Default config file is set to: `./config/app/local.yaml`
+This is a demo API showcasing gRPC and Protobuf in Golang.  
+It connects to a HTTP REST API downstream, found here: https://github.com/qwertyp4nts/pet-insurance-rest-api-demo
 
-To run with a custom config file: `go run cmd/pets/main.go --config=./config/app/local.yaml`
+## Tech notes
+Run the service locally:  
+`go run cmd/pets/main.go`
+
+Note: The default config file is set to: `./config/app/local.yaml`
+
+To run with a custom config file:  
+`go run cmd/pets/main.go --config=./config/app/local.yaml`
 
 Regenerate proto code (from root): 
 ```
